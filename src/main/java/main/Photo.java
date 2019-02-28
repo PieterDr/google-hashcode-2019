@@ -5,10 +5,10 @@ import java.util.Set;
 public class Photo {
 
     Orientation orientation;
-    String id;
+    int id;
     Set<String> tags;
 
-    public Photo(Orientation orientation, String id, Set<String> tags) {
+    public Photo(Orientation orientation, int id, Set<String> tags) {
         this.orientation = orientation;
         this.id = id;
         this.tags = tags;
@@ -20,6 +20,10 @@ public class Photo {
 
     public Set<String> getTags() {
         return tags;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

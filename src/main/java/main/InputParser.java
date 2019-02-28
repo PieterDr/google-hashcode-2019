@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
@@ -13,6 +14,7 @@ import static java.util.stream.Collectors.toSet;
 public class InputParser {
 
     public List<Photo> parse(String filename) throws IOException {
+        AtomicInteger id = new AtomicInteger();
         return new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename))).lines()
                 .skip(1)
                 .map(line -> {
@@ -22,7 +24,7 @@ public class InputParser {
                     Set<String> tags = Arrays.stream(split)
                             .skip(2)
                             .collect(toSet());
-                    return new Photo(orientation, split[1], tags);
+                    return new Photo(orientation, id.getAndIncrement(), tags);
                 })
                 .collect(Collectors.toList());
     }
