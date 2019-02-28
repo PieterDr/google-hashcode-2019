@@ -38,7 +38,7 @@ public class CombineVerticalsAndHorizontalAndOrder implements Solution {
 
     private static List<Slide> orderSlides(ArrayList<Slide> slides) {
         return slides.stream().sorted((o1, o2) -> {
-            return
+            return 0;
         }).collect(Collectors.toList());
     }
 }

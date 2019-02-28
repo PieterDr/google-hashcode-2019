@@ -1,12 +1,10 @@
 package main.strategy;
 
+import com.google.common.collect.Sets;
 import main.Photo;
 import main.Slide;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -16,12 +14,12 @@ public class LookUpTable implements Solution {
     public List<Slide> execute(List<Photo> photos) {
         List<Slide> output = new ArrayList<>();
         ArrayList<Slide> slides = new ArrayList<>(generateSlides(photos));
-        Map<String, List<Slide>> tagMap = calculateTagMap(slides);
-        System.out.println("tagMap = " + tagMap.size());
+        Map<String, Set<Slide>> tagMap = calculateTagMap(slides);
 
-        Slide slide = slides.get(0);
+        slides.sort(Comparator.comparingInt(slide -> slide.getTags().size()));
+        Slide slide = slides.get(slides.size() - 1);
         while (!slides.isEmpty()) {
-//            if(slides.size() %100 == 0)
+            if (slides.size() % 1_000 == 0)
                 System.out.println("slides.size() = " + slides.size());
             slides.remove(slide);
             for (String s : slide.getTags()) {
@@ -29,25 +27,38 @@ public class LookUpTable implements Solution {
             }
             output.add(slide);
 
-            String tag = slide.getTags().iterator().next();
-            List<Slide> overlappingSlides = tagMap.get(tag);
+            List<String> tags = new ArrayList<>(slide.getTags());
+            String tag = tags.get(0);
+            Set<Slide> overlappingSlides = new HashSet<>(tagMap.get(tag));
             if (!overlappingSlides.isEmpty()) {
-                slide = overlappingSlides.iterator().next();
+                int halfCount = slide.getTags().size() / 2;
+                for (int i = 1; i < halfCount; i++) {
+                    overlappingSlides = Sets.union(overlappingSlides, tagMap.get(tags.get(i)));
+                }
+                Optional<Slide> optionalSlide = overlappingSlides.stream()
+                        .filter(os -> Sets.intersection(new HashSet<>(tags), os.getTags()).size() <= halfCount)
+                        .findFirst();
+                if (optionalSlide.isPresent()) {
+                    slide = optionalSlide.get();
+                } else {
+                    slide = overlappingSlides.iterator().next();
+                }
+
             } else {
-                System.out.println("no overlap");
-                if (!slides.isEmpty())
-                    slide = slides.get(0);
+                if (!slides.isEmpty()) {
+                    slide = slides.get(slides.size() - 1);
+                }
             }
         }
 
         return output;
     }
 
-    private static Map<String, List<Slide>> calculateTagMap(ArrayList<Slide> slides) {
-        Map<String, List<Slide>> slidesByTag = new HashMap<>();
+    private static Map<String, Set<Slide>> calculateTagMap(ArrayList<Slide> slides) {
+        Map<String, Set<Slide>> slidesByTag = new HashMap<>();
         for (Slide slide : slides) {
             for (String tag : slide.getTags()) {
-                slidesByTag.computeIfAbsent(tag, t -> new ArrayList<>()).add(slide);
+                slidesByTag.computeIfAbsent(tag, t -> new HashSet<>()).add(slide);
             }
         }
         return slidesByTag;
@@ -55,10 +66,20 @@ public class LookUpTable implements Solution {
 
     private static ArrayList<Slide> generateSlides(List<Photo> photos) {
         List<Photo> verticals = getVerticals(photos);
+        verticals.sort(Comparator.comparingInt(photo -> ((Photo) photo).getTags().size()).reversed());
         ArrayList<Slide> slides = new ArrayList<>();
+
+        outer:
         for (int i = 0; i < verticals.size(); i++) {
-            if (i != verticals.size() - 1) {
-                slides.add(new Slide(verticals.get(i), verticals.get(++i)));
+            Photo photo = verticals.get(i);
+            Set<String> currentTags = photo.getTags();
+            for (int j = i + 1; j < verticals.size(); j++) {
+                Photo otherPhoto = verticals.get(j);
+                if (Collections.disjoint(otherPhoto.getTags(), currentTags)) {
+                    slides.add(new Slide(photo, otherPhoto));
+                    verticals.remove(otherPhoto);
+                    continue outer;
+                }
             }
         }
         slides.addAll(getHorizontals(photos));
@@ -66,9 +87,11 @@ public class LookUpTable implements Solution {
     }
 
     private static List<Photo> getVerticals(List<Photo> photos) {
-        return photos.stream()
+        List<Photo> verticals = photos.stream()
                 .filter(Photo::isVertical)
                 .collect(toList());
+
+        return verticals;
     }
 
     private static List<Slide> getHorizontals(List<Photo> photos) {

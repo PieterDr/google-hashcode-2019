@@ -1,5 +1,6 @@
 package main;
 
+import main.strategy.LookUpTable;
 import main.strategy.RandomizingSolution;
 
 import java.io.BufferedWriter;
@@ -32,7 +33,7 @@ public class Main {
     }
 
     private static List<Slide> run(List<Photo> photos) {
-        return new RandomizingSolution().execute(photos);
+        return new LookUpTable().execute(photos);
     }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {
