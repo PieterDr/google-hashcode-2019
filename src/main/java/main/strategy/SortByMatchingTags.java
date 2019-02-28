@@ -68,7 +68,7 @@ public class SortByMatchingTags implements Solution {
         while (slides.size() > 0) {
             Slide slide = slides.get(0);
             result.add(slide);
-            slides.removeIf(p -> p.equals(slides));
+            slides.removeIf(p -> p.equals(slide));
             Slide highestMatch = getHighestMatch(slide, slides);
             result.add(highestMatch);
             slides.removeIf(p -> p.equals(highestMatch));
