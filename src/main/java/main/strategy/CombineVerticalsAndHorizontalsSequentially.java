@@ -12,14 +12,7 @@ public class CombineVerticalsAndHorizontalsSequentially implements Solution {
 
     @Override
     public List<Slide> execute(List<Photo> photos) {
-        List<Photo> verticals = getVerticals(photos);
-        ArrayList<Slide> slides = new ArrayList<>();
-        for (int i = 0; i < verticals.size() - 1; i++) {
-            slides.add(new Slide(verticals.get(i), verticals.get(++i)));
-        }
-        slides.addAll(getHorizontals(photos));
-        slides.sort(Comparator.comparingInt(slide -> ((Slide) slide).getTags().size()).reversed());
-
+        ArrayList<Slide> slides = generateSlides(photos);
         Map<String, List<Slide>> tagMap = calculateTagMap(slides);
 
         List<Slide> result = new LinkedList<>();
@@ -51,6 +44,28 @@ public class CombineVerticalsAndHorizontalsSequentially implements Solution {
                 System.out.println(i);
         }
         return result;
+    }
+
+    private static ArrayList<Slide> generateSlides(List<Photo> photos) {
+        List<Photo> verticals = getVerticals(photos);
+        verticals.sort(Comparator.comparingInt(photo -> ((Photo) photo).getTags().size()).reversed());
+        ArrayList<Slide> slides = new ArrayList<>();
+
+        outer:
+        for (int i = 0; i < verticals.size(); i++) {
+            Photo photo = verticals.get(i);
+            Set<String> currentTags = photo.getTags();
+            for (int j = i + 1; j < verticals.size(); j++) {
+                Photo otherPhoto = verticals.get(j);
+                if (Collections.disjoint(otherPhoto.getTags(), currentTags)) {
+                    slides.add(new Slide(photo, otherPhoto));
+                    verticals.remove(otherPhoto);
+                    continue outer;
+                }
+            }
+        }
+        slides.addAll(getHorizontals(photos));
+        return slides;
     }
 
     private void removeFromTagMap(Map<String, List<Slide>> tagMap, Slide best) {
