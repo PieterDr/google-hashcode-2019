@@ -29,6 +29,7 @@ public class Slide {
         otherTags.removeAll(intersection);
         return min(intersection.size(), min(thisTags.size(), otherTags.size()));
     }
+
     public List<Photo> getPhotos() {
         return photos;
     }
@@ -44,9 +45,9 @@ public class Slide {
     private boolean isLegitness(List<Photo> photos) {
         switch (photos.size()) {
             case 1:
-                return photos.get(0).getOrientation().equals(Orientation.HORIZONTAL);
+                return photos.get(0).getOrientation() == Orientation.HORIZONTAL;
             case 2:
-                return photos.stream().allMatch(x -> x.getOrientation().equals(Orientation.VERTICAL));
+                return photos.stream().allMatch(x -> x.getOrientation() == Orientation.VERTICAL);
             default:
                 return false;
         }
