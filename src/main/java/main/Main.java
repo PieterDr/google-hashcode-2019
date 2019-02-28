@@ -1,13 +1,12 @@
 package main;
 
+import main.strategy.CombineVerticalsAndHorizontalsSequentially;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 public class Main {
 
@@ -32,26 +31,9 @@ public class Main {
     }
 
     private static List<Slide> run(List<Photo> photos) {
-        List<Photo> verticals = getVerticals(photos);
-        ArrayList<Slide> slides = new ArrayList<>();
-        for (int i = 0; i < verticals.size(); i++) {
-            if (i != verticals.size() - 1) {
-                slides.add(new Slide(verticals.get(i), verticals.get(++i)));
-            }
-        }
-        slides.addAll(getHorizontals(photos));
-        return slides;
+        return new CombineVerticalsAndHorizontalsSequentially().execute(photos);
     }
 
-    private static List<Photo> getVerticals(List<Photo> photos) {
-        return photos.stream()
-                .filter(Photo::isVertical)
-                .collect(toList());
-    }
-
-    private static List<Slide> getHorizontals(List<Photo> photos) {
-        return photos.stream().filter(Photo::isHorizontal).map(Slide::new).collect(toList());
-    }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile.replace("txt", "out")));
