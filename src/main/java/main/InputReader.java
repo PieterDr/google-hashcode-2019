@@ -1,3 +1,5 @@
+package main;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -12,7 +14,7 @@ public class InputReader {
             return lines.skip(1)
                     .map(line -> {
                         String[] parts = line.split(" ");
-                        return new Photo(parts[0], Stream.of(parts).skip(3).collect(Collectors.toList()));
+                        return new Photo(Orientation.from(parts[0]), Stream.of(parts).skip(3).collect(Collectors.toSet()));
                     })
                     .collect(Collectors.toList());
         } catch (Exception e) {

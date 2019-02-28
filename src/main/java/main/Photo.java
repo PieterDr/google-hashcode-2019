@@ -12,4 +12,19 @@ public class Photo {
         this.tags = tags;
     }
 
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    @Override
+    public String toString() {
+        return "Photo{" +
+                "orientation=" + orientation +
+                ", tags=" + tags +
+                '}';
+    }
 }
