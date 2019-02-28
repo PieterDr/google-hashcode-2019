@@ -16,7 +16,7 @@ public class SortByMatchingTags implements Solution {
         List<Slide> horizontals = getHorizontals(photos);
         List<Slide> verticals = getVerticals(photos);
         horizontals.addAll(verticals);
-        return horizontals;
+        return sortByTagsUlitmate(horizontals);
     }
 
     private static List<Slide> getVerticals(List<Photo> photos) {
@@ -58,6 +58,31 @@ public class SortByMatchingTags implements Solution {
             int match = p.compareTags(photo);
             if (match > highestMatch) {
                 highest = photo;
+            }
+        }
+        return highest;
+    }
+
+    private static List<Slide> sortByTagsUlitmate(List<Slide> slides) {
+        ArrayList<Slide> result = new ArrayList<>();
+        while (slides.size() > 0) {
+            Slide slide = slides.get(0);
+            result.add(slide);
+            slides.removeIf(p -> p.equals(slides));
+            Slide highestMatch = getHighestMatch(slide, slides);
+            result.add(highestMatch);
+            slides.removeIf(p -> p.equals(highestMatch));
+        }
+        return result;
+    }
+
+    private static Slide getHighestMatch(Slide s, List<Slide> slides) {
+        Slide highest = slides.get(0);
+        int highestMatch = 0;
+        for (Slide slide : slides) {
+            int match = s.compareTags(slide);
+            if (match > highestMatch) {
+                highest = slide;
             }
         }
         return highest;

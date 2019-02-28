@@ -1,8 +1,6 @@
 package main;
 
-import main.strategy.LookUpTable;
 import main.strategy.SortByMatchingTags;
-import main.strategy.RandomizingSolution;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
