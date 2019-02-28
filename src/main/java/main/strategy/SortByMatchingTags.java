@@ -5,7 +5,6 @@ import main.Slide;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -19,7 +18,7 @@ public class SortByMatchingTags implements Solution {
         return sortByTagsUlitmate(horizontals);
     }
 
-    private static List<Slide> getVerticals(List<Photo> photos) {
+    public static List<Slide> getVerticals(List<Photo> photos) {
         List<Photo> verticals = photos.stream()
                 .filter(Photo::isVertical)
                 .collect(toList());
@@ -33,25 +32,24 @@ public class SortByMatchingTags implements Solution {
         return result;
     }
 
-    private static List<Slide> getHorizontals(List<Photo> photos) {
-        List<Photo> horizontals = photos.stream().filter(Photo::isHorizontal).collect(toList());
-        return sortByTags(horizontals).stream().map(Slide::new).collect(toList());
+    public static List<Slide> getHorizontals(List<Photo> photos) {
+        return photos.stream().filter(Photo::isHorizontal).map(Slide::new).collect(toList());
     }
 
-    private static List<Photo> sortByTags(List<Photo> photos) {
+    public static List<Photo> sortByTags(List<Photo> photos) {
         ArrayList<Photo> result = new ArrayList<>();
         while (photos.size() > 0) {
             Photo photo = photos.get(0);
             result.add(photo);
             photos.removeIf(p -> p.equals(photo));
-            Photo highestMatch = getHighestMatch(photo, photos);
+            Photo highestMatch = getLowestMatch(photo, photos);
             result.add(highestMatch);
             photos.removeIf(p -> p.equals(highestMatch));
         }
         return result;
     }
 
-    private static Photo getHighestMatch(Photo p, List<Photo> photos) {
+    private static Photo getLowestMatch(Photo p, List<Photo> photos) {
         Photo highest = photos.get(0);
         int highestMatch = 0;
         for (Photo photo : photos) {
@@ -63,28 +61,29 @@ public class SortByMatchingTags implements Solution {
         return highest;
     }
 
-    private static List<Slide> sortByTagsUlitmate(List<Slide> slides) {
+    public static List<Slide> sortByTagsUlitmate(List<Slide> slides) {
         ArrayList<Slide> result = new ArrayList<>();
         while (slides.size() > 0) {
             Slide slide = slides.get(0);
             result.add(slide);
             slides.removeIf(p -> p.equals(slide));
-            Slide highestMatch = getHighestMatch(slide, slides);
+            Slide highestMatch = getLowestMatch(slide, slides);
             result.add(highestMatch);
             slides.removeIf(p -> p.equals(highestMatch));
         }
         return result;
     }
 
-    private static Slide getHighestMatch(Slide s, List<Slide> slides) {
-        Slide highest = slides.get(0);
-        int highestMatch = 0;
+    private static Slide getLowestMatch(Slide s, List<Slide> slides) {
+        Slide lowest = slides.get(0);
+        int lowestMatch = Integer.MAX_VALUE;
         for (Slide slide : slides) {
             int match = s.compareTags(slide);
-            if (match > highestMatch) {
-                highest = slide;
+            if (match < lowestMatch) {
+                lowest = slide;
+                lowestMatch = match;
             }
         }
-        return highest;
+        return lowest;
     }
 }

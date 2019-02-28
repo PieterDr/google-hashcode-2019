@@ -1,17 +1,12 @@
 package main;
 
-<<<<<<< HEAD
-import main.strategy.LookUpTable;
-import main.strategy.RandomizingSolution;
-=======
-import main.strategy.CombineVerticalsAndHorizontalsSequentially;
->>>>>>> d7aa6726c11575cd190ab6a50468082d964fdee3
+import main.strategy.SortVerticalPhotosThenMakeSlidesThenSortSlides;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -23,29 +18,22 @@ public class Main {
 
     public static void main(String[] args) {
         InputParser parser = new InputParser();
-        Arrays.stream(new String[]{
-                        INPUT_A,
-                        INPUT_B,
-                        INPUT_C,
-                        INPUT_D,
-                        INPUT_E,
-                })
+        Stream.of(INPUT_B, INPUT_C, INPUT_D, INPUT_E)
                 .forEach(input -> {
-                    System.out.println(input);
+                    System.out.println("RUNNING: " + input);
                     try {
                         List<Photo> photos = parser.parse(input);
                         List<Slide> slides = run(photos);
-                        System.out.println("SCORE: " + Scorer.score(slides));
+                        System.out.println(Scorer.score(slides));
                         write(input, slides);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.println();
                 });
     }
 
     private static List<Slide> run(List<Photo> photos) {
-        return new CombineVerticalsAndHorizontalsSequentially().execute(photos);
+        return new SortVerticalPhotosThenMakeSlidesThenSortSlides().execute(photos);
     }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {
