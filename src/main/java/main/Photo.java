@@ -42,4 +42,14 @@ public class Photo {
     public boolean isVertical() {
         return orientation == Orientation.VERTICAL;
     }
+
+    public int compareTags(Photo p) {
+        int result = 0;
+        for (String tag : tags) {
+            if (p.getTags().contains(tag)) {
+                result++;
+            }
+        }
+        return result;
+    }
 }

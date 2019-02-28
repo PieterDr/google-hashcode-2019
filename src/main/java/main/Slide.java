@@ -71,4 +71,14 @@ public class Slide {
         return photos.stream().map(p -> p.tags).flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
+    public int compareTags(Slide s) {
+        int result = 0;
+        for (String tag : getTags()) {
+            if (s.getTags().contains(tag)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
 }
