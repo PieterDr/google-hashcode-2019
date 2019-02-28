@@ -1,5 +1,6 @@
 package main;
 
+import main.strategy.CombineVerticalsAndHorizontalAndOrder;
 import main.strategy.LookUpTable;
 
 import java.io.BufferedWriter;
@@ -36,7 +37,8 @@ public class Main {
     }
 
     private static List<Slide> run(List<Photo> photos) {
-        return new LookUpTable().execute(photos);
+//        return new LookUpTable().execute(photos);
+        return new CombineVerticalsAndHorizontalAndOrder().execute(photos);
     }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {

@@ -28,7 +28,7 @@ public class Slide {
         this(asList(photos));
     }
 
-    int score(Slide o) {
+    public int score(Slide o) {
         Sets.SetView<String> intersection = Sets.intersection(getAllTags(), o.getAllTags());
         Set<String> thisTags = getAllTags();
         Set<String> otherTags = o.getAllTags();
