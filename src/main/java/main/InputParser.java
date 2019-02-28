@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toSet;
 
 public class InputParser {
 
-    public List<Photo> parse(String filename) throws IOException {
+    public List<Photo> parse(String filename) {
         AtomicInteger id = new AtomicInteger();
         return new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename))).lines()
                 .skip(1)
@@ -24,7 +24,7 @@ public class InputParser {
                     Set<String> tags = Arrays.stream(split)
                             .skip(2)
                             .collect(toSet());
-                    return new Photo(orientation, id.incrementAndGet(), tags);
+                    return new Photo(orientation, id.getAndIncrement(), tags);
                 })
                 .collect(Collectors.toList());
     }
@@ -39,7 +39,7 @@ public class InputParser {
         throw new IllegalArgumentException(line);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         System.out.println("new InputParser().parse() = " + new InputParser().parse("a_example.txt"));
     }
 

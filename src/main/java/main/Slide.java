@@ -7,18 +7,24 @@ import java.util.List;
 import java.util.Set;
 
 import static java.lang.Math.min;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
 public class Slide {
 
     List<Photo> photos;
 
-    public Slide(List<Photo> photos) throws Exception {
+    public Slide(List<Photo> photos) {
         if (this.isLegitness(photos)) {
             this.photos = photos;
         } else {
-            throw new Exception("Slide not legit");
+            throw new RuntimeException("Slide not legit");
         }
+    }
+
+    public Slide(Photo... photos ) {
+        this(asList(photos));
     }
 
     int score(Slide o) {
@@ -28,6 +34,13 @@ public class Slide {
         thisTags.removeAll(intersection);
         otherTags.removeAll(intersection);
         return min(intersection.size(), min(thisTags.size(), otherTags.size()));
+    }
+
+    public String getPrintString() {
+        return photos.stream()
+                .map(photo -> photo.id)
+                .map(String::valueOf)
+                .collect(joining(" "));
     }
 
     public List<Photo> getPhotos() {

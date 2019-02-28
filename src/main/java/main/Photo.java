@@ -34,4 +34,12 @@ public class Photo {
                 ", tags=" + tags +
                 '}';
     }
+
+    public boolean isHorizontal() {
+        return orientation == Orientation.HORIZONTAL;
+    }
+
+    public boolean isVertical() {
+        return orientation == Orientation.VERTICAL;
+    }
 }
