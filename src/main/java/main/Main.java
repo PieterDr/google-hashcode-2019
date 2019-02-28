@@ -1,18 +1,12 @@
 package main;
 
-import main.strategy.CombineVerticalsAndHorizontalAndOrder;
-import main.strategy.LookUpTable;
+import main.strategy.RandomizingSolution;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 public class Main {
 
@@ -29,6 +23,7 @@ public class Main {
                     try {
                         List<Photo> photos = parser.parse(input);
                         List<Slide> slides = run(photos);
+                        System.out.println(Scorer.score(slides));
                         write(input, slides);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -37,8 +32,7 @@ public class Main {
     }
 
     private static List<Slide> run(List<Photo> photos) {
-//        return new LookUpTable().execute(photos);
-        return new CombineVerticalsAndHorizontalAndOrder().execute(photos);
+        return new RandomizingSolution().execute(photos);
     }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {
