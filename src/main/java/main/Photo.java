@@ -38,4 +38,8 @@ public class Photo {
     public boolean isHorizontal() {
         return orientation == Orientation.HORIZONTAL;
     }
+
+    public boolean isVertical() {
+        return orientation == Orientation.VERTICAL;
+    }
 }
