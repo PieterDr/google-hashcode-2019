@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import static java.lang.Math.min;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
 public class Slide {
@@ -21,6 +23,10 @@ public class Slide {
         }
     }
 
+    public Slide(Photo... photos ) throws Exception {
+        this(asList(photos));
+    }
+
     int score(Slide o) {
         Sets.SetView<String> intersection = Sets.intersection(getAllTags(), o.getAllTags());
         Set<String> thisTags = getAllTags();
@@ -28,6 +34,13 @@ public class Slide {
         thisTags.removeAll(intersection);
         otherTags.removeAll(intersection);
         return min(intersection.size(), min(thisTags.size(), otherTags.size()));
+    }
+
+    public String getPrintString() {
+        return photos.stream()
+                .map(photo -> photo.id)
+                .map(String::valueOf)
+                .collect(joining(" "));
     }
 
     public List<Photo> getPhotos() {
