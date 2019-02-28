@@ -15,15 +15,15 @@ public class Slide {
 
     List<Photo> photos;
 
-    public Slide(List<Photo> photos) throws Exception {
+    public Slide(List<Photo> photos) {
         if (this.isLegitness(photos)) {
             this.photos = photos;
         } else {
-            throw new Exception("Slide not legit");
+            throw new RuntimeException("Slide not legit");
         }
     }
 
-    public Slide(Photo... photos ) throws Exception {
+    public Slide(Photo... photos ) {
         this(asList(photos));
     }
 

@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toSet;
 
 public class InputParser {
 
-    public List<Photo> parse(String filename) throws IOException {
+    public List<Photo> parse(String filename) {
         AtomicInteger id = new AtomicInteger();
         return new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename))).lines()
                 .skip(1)

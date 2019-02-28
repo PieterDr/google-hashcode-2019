@@ -4,8 +4,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 public class Main {
 
@@ -15,16 +16,25 @@ public class Main {
     static final String INPUT_D = "d_pet_pictures.txt";
     static final String INPUT_E = "e_shiny_selfies.txt";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         InputParser parser = new InputParser();
-        List<Photo> photos = parser.parse(INPUT_A);
-        List<Slide> slides = run(photos);
-        write(INPUT_A, slides);
+        Stream.of(INPUT_A, INPUT_B, INPUT_C, INPUT_D, INPUT_E)
+                .forEach(input -> {
+                    try {
+                        List<Photo> photos = parser.parse(input);
+                        List<Slide> slides = run(photos);
+                        write(input, slides);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
-    private static List<Slide> run(List<Photo> photos) throws Exception {
-        Slide slide = new Slide(photos.get(0));
-        return asList(slide);
+    private static List<Slide> run(List<Photo> photos) {
+        return photos.stream()
+                .filter(Photo::isHorizontal)
+                .map(Slide::new)
+                .collect(toList());
     }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {
