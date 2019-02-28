@@ -1,7 +1,6 @@
 package main;
 
 public enum Orientation {
-
     HORIZONTAL, VERTICAL;
 
     public static Orientation from(String part) {

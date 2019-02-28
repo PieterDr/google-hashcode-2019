@@ -13,8 +13,12 @@ public class Slide {
 
     List<Photo> photos;
 
-    public Slide(List<Photo> photos) {
-        this.photos = photos;
+    public Slide(List<Photo> photos) throws Exception {
+        if (this.isLegitness(photos)) {
+            this.photos = photos;
+        } else {
+            throw new Exception("Slide not legit");
+        }
     }
 
     int score(Slide o) {
@@ -25,11 +29,26 @@ public class Slide {
         otherTags.removeAll(intersection);
         return min(intersection.size(), min(thisTags.size(), otherTags.size()));
     }
+    public List<Photo> getPhotos() {
+        return photos;
+    }
 
     private Set<String> getAllTags() {
         return photos.stream()
                 .map(photo -> photo.tags)
                 .flatMap(Collection::stream)
                 .collect(toSet());
+    }
+
+    // Max 1 Horizontal or 2 Vertical
+    private boolean isLegitness(List<Photo> photos) {
+        switch (photos.size()) {
+            case 1:
+                return photos.get(0).getOrientation().equals(Orientation.HORIZONTAL);
+            case 2:
+                return photos.stream().allMatch(x -> x.getOrientation().equals(Orientation.VERTICAL));
+            default:
+                return false;
+        }
     }
 }
