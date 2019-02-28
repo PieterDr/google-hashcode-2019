@@ -1,6 +1,7 @@
 package main;
 
 import main.strategy.LookUpTable;
+import main.strategy.SortByMatchingTags;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -25,6 +26,7 @@ public class Main {
         InputParser parser = new InputParser();
         Stream.of(INPUT_A, INPUT_B, INPUT_C, INPUT_D, INPUT_E)
                 .forEach(input -> {
+                    System.out.println("RUNNING: " + input);
                     try {
                         List<Photo> photos = parser.parse(input);
                         List<Slide> slides = run(photos);
@@ -36,7 +38,7 @@ public class Main {
     }
 
     private static List<Slide> run(List<Photo> photos) {
-        return new LookUpTable().execute(photos);
+        return new SortByMatchingTags().execute(photos);
     }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {
