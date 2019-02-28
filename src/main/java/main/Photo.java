@@ -14,7 +14,6 @@ public class Photo {
         this.tags = tags;
     }
 
-<<<<<<< Updated upstream
     public Orientation getOrientation() {
         return orientation;
     }
@@ -23,21 +22,12 @@ public class Photo {
         return tags;
     }
 
-=======
->>>>>>> Stashed changes
     @Override
     public String toString() {
         return "Photo{" +
                 "orientation=" + orientation +
-<<<<<<< Updated upstream
-                ", tags=" + tags +
-                '}';
-    }
-=======
                 ", id='" + id + '\'' +
                 ", tags=" + tags +
                 '}';
     }
-
->>>>>>> Stashed changes
 }
