@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.min;
 import static java.util.Arrays.asList;
@@ -23,7 +24,7 @@ public class Slide {
         }
     }
 
-    public Slide(Photo... photos ) {
+    public Slide(Photo... photos) {
         this(asList(photos));
     }
 
@@ -65,4 +66,9 @@ public class Slide {
                 return false;
         }
     }
+
+    public Set<String> getTags() {
+        return photos.stream().map(p -> p.tags).flatMap(Collection::stream).collect(Collectors.toSet());
+    }
+
 }
