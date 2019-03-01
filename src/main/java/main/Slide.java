@@ -29,6 +29,9 @@ public class Slide {
     }
 
     public int score(Slide o) {
+        if (this == o) {
+            return -1;
+        }
         Sets.SetView<String> intersection = Sets.intersection(getAllTags(), o.getAllTags());
         Set<String> thisTags = getAllTags();
         Set<String> otherTags = o.getAllTags();

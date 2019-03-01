@@ -1,6 +1,6 @@
 package main;
 
-import main.strategy.CombineVerticalsAndHorizontalsSequentially;
+import main.strategy.DivideAndConquer;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -20,8 +20,6 @@ public class Main {
     public static void main(String[] args) {
         InputParser parser = new InputParser();
         Arrays.stream(new String[]{
-                        INPUT_A,
-                        INPUT_B,
                         INPUT_C,
                         INPUT_D,
                         INPUT_E,
@@ -41,7 +39,7 @@ public class Main {
     }
 
     private static List<Slide> run(List<Photo> photos) {
-        return new CombineVerticalsAndHorizontalsSequentially().execute(photos);
+        return new DivideAndConquer().execute(photos);
     }
 
     private static void write(String inputFile, List<Slide> slides) throws IOException {
