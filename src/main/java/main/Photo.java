@@ -52,4 +52,8 @@ public class Photo {
         }
         return result;
     }
+
+    public long tagMatchCount(Photo candidate) {
+        return tags.stream().filter(tag -> candidate.tags.contains(tag)).count();
+    }
 }

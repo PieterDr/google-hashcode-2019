@@ -11,12 +11,15 @@ import static java.util.stream.Collectors.toList;
 
 public class DivideAndConquer implements Solution {
 
-    private static final Integer CHUNK_SIZE = 5000;
+    private static final Integer CHUNK_SIZE = 10_000;
 
     @Override
     public List<Slide> execute(List<Photo> photos) {
         List<Slide> slides = new ArrayList<>();
-        List<List<Slide>> chunks = splitInChunks(photos).parallelStream().map(this::generateSlides).collect(toList());
+        List<List<Photo>> photoChunks = splitInChunks(photos);
+        List<List<Slide>> chunks = IntStream.range(0, photoChunks.size())
+                .mapToObj(i -> generateSlides(photoChunks.get(i), i))
+                .collect(toList());
         System.out.println("chunks = " + chunks.size());
         IntStream.range(0, chunks.size())
                 .parallel()
@@ -32,8 +35,8 @@ public class DivideAndConquer implements Solution {
         System.out.println("chunkIndex = " + chunkIndex);
         List<Slide> ordered = new ArrayList<>();
         Slide slide = slides.get(0);
+        slides.remove(slide);
         while (!slides.isEmpty()) {
-            slides.remove(slide);
             Slide next = null;
             int bestScore = -1;
             for (Slide candidate : slides) {
@@ -62,13 +65,31 @@ public class DivideAndConquer implements Solution {
         return chunks;
     }
 
-    private List<Slide> generateSlides(List<Photo> photos) {
+    private List<Slide> generateSlides(List<Photo> photos, int chunkIndex) {
         List<Slide> slides = new ArrayList<>();
-        List<Photo> verticals = photos.stream().filter(Photo::isVertical).collect(toList());
-        for (int i = 0; i < verticals.size() - 1; i++) {
-            slides.add(new Slide(verticals.get(i), verticals.get(++i)));
-        }
+        combineVerticals(photos, slides, chunkIndex);
         slides.addAll(photos.stream().filter(Photo::isHorizontal).map(Slide::new).collect(toList()));
         return slides;
+    }
+
+    private void combineVerticals(List<Photo> photos, List<Slide> slides, int chunkIndex) {
+        List<Photo> verticals = photos.stream().filter(Photo::isVertical).collect(toList());
+        while (!verticals.isEmpty()) {
+            Photo photo = verticals.get(0);
+            verticals.remove(photo);
+            Photo best = null;
+            long minMatches = Long.MAX_VALUE;
+            for (int i = 0; i < Integer.min(1000, verticals.size()); i++) {
+                Photo candidate = verticals.get(i);
+                long matchCount = photo.tagMatchCount(candidate);
+                if (minMatches > matchCount) {
+                    best = candidate;
+                    minMatches = matchCount;
+                }
+            }
+            verticals.remove(best);
+            if (best != null)
+                slides.add(new Slide(photo, best));
+        }
     }
 }
